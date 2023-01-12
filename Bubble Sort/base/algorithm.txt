@@ -1,0 +1,12 @@
+Ernest Ramazani 
+CSCI 24000
+Spring 2020
+A2 Algorithm 
+We will define 3 functiions and 1 main function 
+function swap, printValues and sort 
+the functon swap is the where we are going to work with our pointers to swap numbers 
+the second function is for printing values on the screen 
+the third function, sort, is where the main process of swappping will occur. The function, by using to loops, will search for if the number to very first left is less than greater than the number to the right and swap them. 
+the last function is our main function thta the compiler will run. It returns the function printvalues and sort. 
+
+

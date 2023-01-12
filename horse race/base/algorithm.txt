@@ -1,0 +1,19 @@
+Ernest Ramazani 
+CSCI 24000
+Spring 22
+
+Algorithm 
+
+We will need only one function + the main function
+We will first import all the necessary libraries 
+We create our global variables 
+The globals variables are 5 arrays containing the position of each horse and the 15 units 
+we create our first function
+the fuction will have one loop with 5 different index for the 5 different horses 
+we create 5 variables that contains the flip coin random generator 
+for each variable, we have one index so that we can use it to swap the char in the array
+if the coin flipped gives an 1, we swap the index with the closest char 
+if flip gives an 0, we do nothing but still print the position of the index so we know which horse is leading 
+we increaming all index by one and set a limit so the loop does not go for ever 
+the first to reach the limit won.
+

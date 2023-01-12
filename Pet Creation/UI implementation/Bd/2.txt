@@ -1,0 +1,7 @@
+Id     : 2
+Name   : Phoenix 
+Age    : 150 Years Old
+Sex    : M 
+Color  : Vivid Red 
+Weight : 210 Lb
+Charac : Dead 

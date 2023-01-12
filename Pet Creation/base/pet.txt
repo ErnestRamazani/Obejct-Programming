@@ -1,0 +1,4 @@
+Phoenix, 120 Years Old, M, Vivid Red, 540 lb
+Silver Bird,19 Years Old,M,Silver,50 lb
+Griffon,700,M,French Grey,700 lb
+Dragon, 400 Years old, M, Infinite Red, 800 lb
