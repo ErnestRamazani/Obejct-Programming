@@ -7,6 +7,7 @@
 #include <queue>
 #include <condition_variable>
 #include <random>
+#include "graph.h"
 
 struct Message {
     int hops;
@@ -53,7 +54,9 @@ double rand_range(double min, double max) {
     return dist(gen);
 }
 
-void workingThread(ThreadStatistics& stats, MessageQueue& mq, std::atomic<bool>& terminate) {
+void workingThread(ThreadStatistics& stats, MessageQueue& mq, std::atomic<bool>& terminate, const Graph& graph, int nodeId, std::vector<MessageQueue>& all_queues) {
+    const auto& neighbors = graph.getNeighbors(nodeId);
+
     while (!terminate) {
         Message received_message;
         if (mq.try_receive(received_message)) {
@@ -68,10 +71,17 @@ void workingThread(ThreadStatistics& stats, MessageQueue& mq, std::atomic<bool>&
                 stats.total_travel_time += received_message.travel_time;
             }
 
-          
+          //Forward message if necessary 
             if (received_message.hops < 20) {
                 std::this_thread::sleep_for(std::chrono::duration<double, std::milli>(rand_range(100, 500)));
-                mq.send(received_message);
+
+                // Select a random neighbor
+                int random_neighbor_index = static_cast<int>(rand_range(0, neighbors.size() - 1));
+                auto it = neighbors.begin();
+                std::advance(it, random_neighbor_index);
+                int target_neighbor = *it;
+
+                all_queues[target_neighbor].send(received_message);
                 stats.messages_forwarded++;
             }
 
@@ -82,9 +92,14 @@ void workingThread(ThreadStatistics& stats, MessageQueue& mq, std::atomic<bool>&
         }
     }
 }
-
 int main() {
-    const int num_threads = 10;
+    Graph graph("a28.dat"); 
+
+    // Get the number of nodes from the graph
+    const int num_threads = graph.getNodes().size();
+
+
+    //const int num_threads = 10;
     const int num_messages = 100;
 
     std::vector<ThreadStatistics> all_stats(num_threads);
@@ -93,7 +108,7 @@ int main() {
     std::atomic<bool> terminate(false);
 
     for (int i = 0; i < num_threads; i++) {
-        all_threads.emplace_back(workingThread, std::ref(all_stats[i]), std::ref(all_queues[i]), std::ref(terminate));
+        all_threads.emplace_back(workingThread, std::ref(all_stats[i]), std::ref(all_queues[i]), std::ref(terminate), std::cref(graph), graph.getNodes()[i], std::ref(all_queues));
     }
 
     for (int i = 0; i < num_messages; i++) {

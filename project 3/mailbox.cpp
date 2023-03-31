@@ -1,3 +1,4 @@
+
 #include "mbox.h"
 #include <iostream>
 #include <map>
@@ -18,16 +19,16 @@ private:
     std::map<int, std::condition_variable> mailbox_conds;
 };
 
-
+// Singleton pattern to access the MailBox instance.
 MailBox& getMailBoxInstance() {
     static MailBox mailBox;
     return mailBox;
 }
 
-
+// Implement the 4 API's declared in the header file.
 
 void MailBox::mbox_init() {
-  
+    // No need to initialize anything as the default constructors take care of that.
 }
 
 void MailBox::mbox_destroy() {
@@ -53,4 +54,3 @@ int MailBox::mbox_recv(int id, char* buf, int maxlen) {
     std::copy(msg.begin(), msg.begin() + bytes_received, buf);
     return bytes_received;
 }
-
