@@ -1,0 +1,775 @@
+:: StoryTitle
+test1
+
+
+:: StoryData
+{
+  "ifid": "0567425D-3043-4B92-91A2-69E29D5E59FA",
+  "format": "Harlowe",
+  "format-version": "3.3.5",
+  "start": "Start",
+  "zoom": 0.6
+}
+
+
+:: \ ChooseAttack {"position":"1550,1625","size":"100,100"}
+\::PlayerAttack
+You chose to attack with $chosenSkill.
+(set: $chosenSkillValue to $skillValues's $chosenSkill)
+
+(if: $chosenSkillValue is not 0)[
+    (set: $phoenixLife to it - $chosenSkillValue)
+    The Phoenix takes $chosenSkillValue damage. Its life is now $phoenixLife.
+]
+(else:)[
+    "You don't have the skill $chosenSkill."
+    (goto: "PhoenixBattle")
+]
+
+(if: $phoenixLife <= 0)[
+    The Phoenix has been defeated! You are victorious!
+    [[Victory->Victory]]
+]
+(else:)[
+    [[Continue Battle->PhoenixBattle]]
+]
+
+[[Skip Battle ->endGame]] 
+
+
+:: \ UseShield {"position":"1975,1450","size":"100,100"}
+\::PhoenixBattleDefend
+You chose to use the shield.
+
+(if: $playerSkills contains "Shield of Aegis")[
+    (set: $shield to $skillValues's "Shield of Aegis")
+    (if: $shield >= $phoenixAttack's "value")[
+        (set: $skillValues to it + (dm: "Shield of Aegis", ($shield - $phoenixAttack's "value")))
+        You block the attack with the shield, taking no damage.
+    ]
+    (else:)[
+        (set: $life to it - ($phoenixAttack's "value" - $shield))
+        (set: $skillValues to it + (dm: "Shield of Aegis", 0))
+        You block some of the attack with the shield, but it's not enough. You take ($phoenixAttack's "value" - $shield) damage.
+    ]
+    Your life is now $life and your shield's value is now $skillValues's "Shield of Aegis".
+]
+(else:)[
+    You don't have a shield to use.
+]
+
+(if: $life <= 0)[
+    Your life has dropped to 0. You have been defeated by the Phoenix...
+    [[Game Over->GameOver]]
+]
+(else:)[
+[[Attack the phoenix -> ChooseAttack]] 
+  
+]
+
+[[Skip Battle ->endGame]] 
+
+
+:: BuyBlazingBurst {"position":"600,175","size":"100,100"}
+\:: Buy Blazing Burst
+{
+(if: $gold >= $skillValues's "Blazing Burst")[
+  (set: $playerSkills to it + (a: "Blazing Burst"))
+  (set: $gold to it - $skillValues's "Blazing Burst")
+  "You have bought theBlazing Burst skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Blazing Burst skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyCelestialCataclysm {"position":"725,175","size":"100,100"}
+\::Buy  Celestial Cataclysm 
+{
+(if: $gold >= $skillValues's "Celestial Cataclysm")[
+  (set: $playerSkills to it + (a: "Celestial Cataclysm"))
+  (set: $gold to it - $skillValues's "Celestial Cataclysm")
+  "You have bought the Celestial Cataclysm skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Celestial Cataclysm skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyEarthErruption {"position":"350,175","size":"100,100"}
+\:: Buy Earth Eruption
+{
+(if: $gold >= $skillValues's "Earth Eruption")[
+  (set: $playerSkills to it + (a: "Earth Eruption"))
+  (set: $gold to it - $skillValues's "Earth Eruption")
+  "You have bought the Earth Eruptionr skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the FEarth Eruption skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+
+:: BuyFlameFlicker {"position":"225,775","size":"100,100"}
+\:: BuyFlameFlicker
+{
+(if: $gold >= $skillValues's "Flame Flicker")[
+  (set: $playerSkills to it + (a: "Flame Flicker"))
+  (set: $gold to it - $skillValues's "Flame Flicker")
+  "You have bought the Flame Flicker skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Flame Flicker skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyLife {"position":"700,975","size":"100,100"}
+You have  $gold  gold pieces. Buying 20% of your life back will cost 10 gold pieces. 
+
+(if: $gold >10)[
+	[[Buy 20% Life ->BuyLifeConfirm]]
+](else:)[
+	You dont have enough gold to buy life. 
+]
+
+
+:: BuyLifeConfirm {"position":"825,950","size":"100,100"}
+(set: $life to $life + 0.2*$life)
+(set: $gold to $gold - 10)
+
+You have bought 20% of your life back. Your life is now $life 
+[[Back to Inventory ->Inventory]] 
+
+
+
+:: BuyLightLash {"position":"750,775","size":"100,100"}
+\:: Buy Ligth Lash
+{
+(if: $gold >= $skillValues's "Ligth Lash")[
+  (set: $playerSkills to it + (a: "Ligth Lash"))
+  (set: $gold to it - $skillValues's "Ligth Lash")
+  "You have bought the Ligth Lash skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Ligth Lash  skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuySkill {"position":"475,475","size":"100,100"}
+\:: BuySkill
+
+You currently have the following skills: $skills
+You have $gold gold pieces.
+You can buy the following skills:
+
+[[Buy Flame Flicker->BuyFlameFlicker]]
+[[Buy Wind Whip->BuyWindWhip]]
+[[Buy Stone Shatter->BuyStoneShatter]]
+[[Buy Water Wisp->BuyWaterWisp]]
+[[Buy Light Lash->BuyLightLash]]
+[[Buy Thunder Thrust->BuyThunderThurst]]
+[[Buy EarthErruption->BuyEarthErruption]]
+[[Buy Tidal Tsunami->BuyTidalTsunami]]
+[[Buy Blazing Burst->BuyBlazingBurst]]
+[[Buy Celestial Cataclysm->BuyCelestialCataclysm]]
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyStoneShatter {"position":"475,775","size":"100,100"}
+\:: Buy Stone Shatter
+{
+(if: $gold >= $skillValues's "Stone Shatter")[
+  (set: $playerSkills to it + (a: "Stone Shatter"))
+  (set: $gold to it - $skillValues's "Stone Shatter")
+  "You have bought the Stone Shatter skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Stone Shatter  skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyThunderThurst {"position":"225,175","size":"100,100"}
+\:: Buy Thunder Thrust
+(if: $gold >= $skillValues's "Thunder Thrust")[
+  (set: $playerSkills to it + (a: "Thunder Thrust"))
+  (set: $gold to it - $skillValues's "Thunder Thrust")
+  "You have bought the Thunder Thrust skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Thunder Thrustr skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyTidalTsunami {"position":"475,175","size":"100,100"}
+\:: Buy Tidal Tsunami
+{
+(if: $gold >= $skillValues's "Tidal Tsunami")[
+  (set: $playerSkills to it + (a: "Tidal Tsunami"))
+  (set: $gold to it - $skillValues's "Tidal Tsunami")
+  "You have bought the Tidal Tsunami skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Tidal Tsunami skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyWaterWisp {"position":"600,775","size":"100,100"}
+\:: Buy Water Wisp
+{
+(if: $gold >= $skillValues's "Water Wisp")[
+  (set: $playerSkills to it + (a: "Water Wisp"))
+  (set: $gold to it - $skillValues's "Water Wisp")
+  "You have bought the Water Wisp skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Water Wisp  skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: BuyWindWhip {"position":"350,775","size":"100,100"}
+\:: Buy Wind Whip 
+{
+(if: $gold >= $skillValues's "Wind Whip")[
+  (set: $playerSkills to it + (a: "Wind Whip"))
+  (set: $gold to it - $skillValues's "Wind Whip")
+  "You have bought the Wind Whip r skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have enough gold to buy the Wind Whip  skill."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: ExploreSurrounding {"position":"1225,1300","size":"100,100"}
+\:: Explore
+You explore the surroundings.
+
+(set: $chance to (random: 1, 2))
+
+(if: $chance is 1)[
+    You found a shield! The Shield of Aegis is added to your inventory.
+   (set: $playerSkills to it +(a:"Shield of Aegis"))
+](else:)[
+You did not find anything 
+]
+(set: $exploreCount to it + 1)
+
+Here are your skills
+$playerSkills
+[[Continue Journey|Journey]]
+
+
+
+:: GameOver {"position":"1350,2250","size":"100,100"}
+\::GameOver
+
+The adventure has come to an end. Thank you for playing.
+
+
+
+[[Restart->Start]] 
+
+
+:: HeroSacrifice {"position":"1012.5,1700","size":"100,100"}
+\::HeroSacrifice
+
+In a moment of selfless bravery, you throw yourself over the baby, shielding it from the falling tail feather. The feather lands on you, its fiery heat too much to bear. As your vision fades, you see the baby, safe and unharmed, crawling away from you. You have saved the future of your village.
+
+[[Game Over|GameOver]]
+
+
+:: Inventory {"position":"1250,600","size":"100,100"}
+
+Arriving at the market, you survey your options. There are items to boost your life, and there are skills to learn, each promising to strengthen you in your upcoming battle against the Phoenix.
+
+For every 10 gold pieces, you can buy 20% of your life back. And you can sell your skills for 10 gold pieces, unless they're worth less - in that case, you'll have to sell them for their purchase price.
+
+The skills available are as follows:
+
+1. Flame Flicker - 7 gold pieces (Combat Level 5)
+2. Wind Whip- 7 gold pieces (Combat Level 5)
+3. Stone Shatter - 7 gold pieces (Combat Level 5)
+4. Water Wisp - 7 gold pieces (Combat Level 5)
+5. Light Lash - 7 gold pieces (Combat Level 5)
+6. Thunder Thrust- 15 gold pieces (Combat Level 10)
+7. Earth Eruption - 20 gold pieces (Combat Level 17)
+8. Tidal Tsunami - 25 gold pieces (Combat Level 22)
+9. Blazing Burst- 30 gold pieces (Combat Level 25)
+10. Celestial Cataclysm - 50 gold pieces (Combat Level 40)
+
+You must decide wisely, as your choices could mean the difference between victory and defeat.
+
+\:: Inventory
+
+You have $gold gold pieces.
+ $playerSkills
+ $shield
+
+
+[[Buy Life|BuyLife]]
+[[Sell Life|SellLife]]
+[[Buy Skill|BuySkill]]
+[[Sell Skill|SellSkill]]
+
+[[Back to the journey->Journey]] 
+[[Back to the battle ->PhoenixBattle]] 
+
+
+:: Journey {"position":"1250,1050","size":"100,100"}
+\:: Journey
+As you traverse the dangerous landscapes of your homeland, your mind focuses on the task ahead. The thought of battling the mighty phoenix sends a shiver down your spine, but you know you must press on. The baby's life depends on it.
+
+Along your journey, you have the chance to practice your skills, rest to recover life, or explore to possibly find gold or even a hidden skill. What would you like to do?
+
+
+You have life of $life
+You have $gold gold pieces.
+ $playerSkills
+
+(if:$practiceCount<2)[
+[[Practice my skills ->PracticeSkills]]
+]
+
+(if:$restCount<2)[
+[[Rest and Recover ->RestAndRecover]]
+]
+
+(if:$exploreCount<2)[
+[[Explore Surrounding  ->ExploreSurrounding]]
+]
+
+[[Continue to Phoenix ->PhoenixBattle]]
+
+[[See the inventory  ->Inventory]]
+
+
+
+
+Lets pretend you defeated phoenix
+[[Go to the end of the game ->endGame]]
+
+
+
+:: PhoenixBattle {"position":"1750,1400","size":"100,100"}
+\::PhoenixBattle
+The Phoenix chooses its attack...
+(set: $phoenixAttackRoll to (random: 1, 10))
+
+(if: $phoenixAttackRoll is 1)[
+    (set: $phoenixAttack to (dm:"name", "Inferno Blast", "value", 25))
+    Phoenix's attack: $phoenixAttack
+]
+(else-if: $phoenixAttackRoll > 1 and $phoenixAttackRoll <= 5)[
+    (set: $phoenixAttack to (dm: "name", "Flaming Talons", "value", 15))
+      Phoenix's attack: $phoenixAttack
+]
+(else:)[
+    (set: $phoenixAttack to (dm:"name", "Ember Strike", "value", 10))
+      Phoenix's attack: $phoenixAttack
+]
+
+[[Use shield-> UseShield]] 
+
+[[Skip Battle ->endGame]] 
+
+
+:: PracticeSkills {"position":"925,1300","size":"100,100"}
+\:: PracticeSkills
+Choose a skill to practice:
+
+(for: each _skill, ...$playerSkills)[
+  (link: _skill)[
+    (set: $skillValues's _skill to it + (random: 1,3))
+    "You practice " + _skill + " and it becomes stronger!"
+    (link: "Continue on your journey")[ (goto: "Journey") ]
+  ]
+]
+(set: $practiceCount to it + 1)
+
+
+
+
+:: RestAndRecover {"position":"1425,1300","size":"100,100"}
+\:: RestAndRecover
+You find a safe place to rest and recover. 
+
+(set: $life to it + 5)
+"Your life is now " + $life + "."
+(link: "Continue on your journey")[ (goto: "Journey") ]
+(set: $restCount to it + 1)
+
+
+
+:: SaveMyself {"position":"1275,1675","size":"100,100"}
+\::SaveMyself
+
+With a heavy heart, you roll away from the baby, the tail feather landing where you were just a moment ago. The heat is intense, but you are safe. As you rise, you see the baby, its small body caught in the fire. You are filled with regret, but you know that the village still needs its warrior. You are that warrior.
+
+[[Game Over|GameOver]]
+
+
+:: SellBlazingBurst {"position":"2400,50","size":"100,100"}
+\:: Sell Blazing Burst
+{
+(if: $playerSkills contains "Blazing Burst")[
+  (set: $playerSkills to it - (a: "Blazing Burst"))
+  (set: $gold to it + ($skillValues's "Blazing Burst"))
+  "You have sold the Blazing Burstr skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Blazing Burst skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellCelestialCataclysm {"position":"2525,50","size":"100,100"}
+\:: Sell Celestial Cataclysm
+{
+(if: $playerSkills contains "Celestial Cataclysm")[
+  (set: $playerSkills to it - (a: "Celestial Cataclysm"))
+  (set: $gold to it + ($skillValues's "Celestial Cataclysm"))
+  "You have sold the Celestial Cataclysm skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Celestial Cataclysm skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellCooking {"position":"1925,700","size":"100,100"}
+\:: SellCooking
+{
+(if: $playerSkills contains "Cooking")[
+  (set: $playerSkills to it - (a: "Cooking"))
+  (set: $gold to it + ($skillValues's "Cooking" / 2))
+  "You have sold the Cooking skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Cooking skill to sell."
+]
+}
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellEarthErruption {"position":"2125,50","size":"100,100"}
+\:: Sell Earth Eruption
+{
+(if: $playerSkills contains "Earth Eruption")[
+  (set: $playerSkills to it - (a: "Earth Eruption"))
+  (set: $gold to it + ($skillValues's "Earth Eruption"))
+  "You have sold the Earth Eruption skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Earth Eruption skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellFlameFlicker {"position":"2175,700","size":"100,100"}
+\:: SellFlameFlicker
+{
+(if: $playerSkills contains "Flame Flicker")[
+  (set: $playerSkills to it - (a: "Flame Flicker"))
+  (set: $gold to it + ($skillValues's "Flame Flicker"))
+  "You have sold the Flame Flicker skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Flame Flicker skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellLife {"position":"1725,850","size":"100,100"}
+\:: SellLife
+{
+(if: $life > 1)[
+  (set: $life to $life - 0.2*$life)
+  (set: $gold to $gold + 7)
+  "You have sold 20% of your life. Your life is now " + (round: $life) + " and your gold is now " + $gold + "."
+]
+(else:)[
+  "Your life is too low to sell."
+]
+}
+[[Back to inventory  ->Inventory]]
+
+
+
+:: SellLightLash {"position":"2725,700","size":"100,100"}
+\:: Sell Ligth Lash
+{
+(if: $playerSkills contains "Ligth Lash")[
+  (set: $playerSkills to it - (a: "Ligth Lash"))
+  (set: $gold to it + ($skillValues's "Ligth Lash"))
+  "You have sold the Ligth Lash skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Ligth Lash skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellSinging {"position":"2050,700","size":"100,100"}
+
+\:: SellSinging
+{
+(if: $playerSkills contains "Singing")[
+  (set: $playerSkills to it - (a: "Singing"))
+  (set: $gold to it + ($skillValues's "Singing" / 2))
+  "You have sold the Singing skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Singing skill to sell."
+]
+}
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellSkill {"position":"2225,350","size":"100,100"}
+\:: SellSkill
+You can sell your skills for the following prices:
+
+[[Sell Flame Cooking->SellCooking]]
+[[Sell Flame Singing->SellSinging]]
+[[Sell Flame Woodworking->SellWoodworking]]
+[[Sell Flame Flicker->SellFlameFlicker]]
+[[Sell Wind Whip->SellWindWhip]]
+[[Sell Stone Shatter->SellStoneShatter]]
+[[Sell Water Wisp->SellWaterWisp]]
+[[Sell Light Lash->SellLightLash]]
+[[Sell Thunder Thrust->SellThunderThurst]]
+[[Sell EarthErruption->SellEarthErruption]]
+[[Sell Tidal Tsunami->SellTidalTsunami]]
+[[Sell Blazing Burst->SellBlazingBurst]]
+[[Sell Celestial Cataclysm->SellCelestialCataclysm]]
+
+[[Back to inventory  ->Inventory]]
+
+
+
+:: SellStoneShatter {"position":"2450,700","size":"100,100"}
+\:: Sell Stone Shatter
+{
+(if: $playerSkills contains "Stone Shatter")[
+  (set: $playerSkills to it - (a: "Stone Shatter"))
+  (set: $gold to it + ($skillValues's "Stone Shatter"))
+  "You have sold the Stone Shatter skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Stone Shatter skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellThunderThurst {"position":"1975,50","size":"100,100"}
+\:: Sell Thunder Thrust
+{
+(if: $playerSkills contains "Thunder Thrust")[
+  (set: $playerSkills to it - (a: "Thunder Thrust"))
+  (set: $gold to it + ($skillValues's "Thunder Thrust"))
+  "You have sold the Thunder Thrust skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Thunder Thrust skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellTidalTsunami {"position":"2250,50","size":"100,100"}
+\:: Sell Tidal Tsunami 
+
+(if: $playerSkills contains "Tidal Tsunami")[
+  (set: $playerSkills to it - (a: "Tidal Tsunami"))
+  (set: $gold to it + ($skillValues's "Tidal Tsunami"))
+  "You have sold the Tidal Tsunamir skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Tidal Tsunami skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellWaterWisp {"position":"2600,700","size":"100,100"}
+\:: Sell Water Wisp
+{
+(if: $playerSkills contains "Water Wisp")[
+  (set: $playerSkills to it - (a: "Water Wisp"))
+  (set: $gold to it + ($skillValues's "Water Wisp"))
+  "You have sold the Water Wisp skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Water Wisp skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellWindWhip {"position":"2300,700","size":"100,100"}
+\:: Sell Wind Whip
+{
+(if: $playerSkills contains "Wind WhipWind Whip")[
+  (set: $playerSkills to it - (a: "Wind WhipWind Whip"))
+  (set: $gold to it + ($skillValues's "Wind Whip"))
+  "You have sold the Wind Whip  skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Wind Whip skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: SellWoodworking {"position":"1800,700","size":"100,100"}
+\:: SellWoodworking
+{
+(if: $playerSkills contains "Woodworking")[
+  (set: $playerSkills to it - (a: "Woodworking"))
+  (set: $gold to it + ($skillValues's "Woodworking" / 2))
+  "You have sold the Woodworking skill. Your gold is now " + $gold + "."
+]
+(else:)[
+  "You don't have the Woodworking skill to sell."
+]
+}
+
+
+[[Back to inventory  ->Inventory]]
+
+
+:: Start {"position":"1275,75","size":"100,100"}
+
+Our hero, a brave and determined warrior, lives in a peaceful village nestled in the heart of the kingdom. Trained by the village elder, the hero has honed three unique skills over time - Cooking, Woodworking, and Singing. These skills, while valuable in village life, are not particularly useful when it comes to facing fiery beasts such as the Phoenix.
+
+Despite this, the hero is unfazed. He knows that his journey will be fraught with danger, and yet he is prepared to face it. With 25 life points and a small pouch containing 30 gold pieces (earned from his 3 skills), he is ready to venture into the unknown, battle the mighty Phoenix, and rescue the captive baby.
+
+Will you, as the hero, choose to spend your gold on more life or on upscaling your skills to increase your power? The choice is yours, and the fate of the baby hangs in the balance.
+\:: Start
+(set: $life to 25)
+(set: $gold to 20)
+(set: $playerSkills to (a: "Basic Swordplay", "Cooking", "Woodworking", "Singing"))
+(set: $skillValues to (dm: "Basic Swordplay", 5, "Cooking", 10, "Woodworking", 10, "Singing", 10, "Flame Flicker", 7, "Wind Whip", 7, "Water Wisp", 7, "Stone Shatter", 7, "Ligth Lash", 7, "Thunder Thrust", 15, "Earth Eruption", 20, "Tidal Tsunami", 25, "Blazing Burst", 30, "Celestial Cataclysm", 50, "Shield of Aegis",50))
+
+
+(set: $phoenixLife to 100)
+(set: $phoenixAttacks to (dm: "Ember Strike", 5, "Flaming Talons", 10, "Inferno Blast", 20))
+
+
+You have life of $life
+Your have $gold pieces of gold
+
+[[Start the Journey ->Journey]]
+[[Visit the Inventory->Inventory]]
+
+
+
+
+
+
+
+[[README-INSTRUCTIONS ->readme]]
+
+
+:: Victory {"position":"1550,1775","size":"100,100"}
+
+
+
+:: endGame {"position":"1075,1575","size":"100,100"}
+\::PhoenixDefeated
+
+Congratulations, you have defeated the Phoenix! Its flaming body lies defeated before you. But as you step over its body to reach the baby, a burning tail feather breaks off and falls towards you and the baby.
+
+You only have time to save one of you. Will it be you, the last warrior of the village, or the baby, the future of the village?
+
+[[Sacrifice myself to save the baby|HeroSacrifice]]
+
+[[Sacrifice the baby to save myself|SaveMyself]]
+
+
+
+:: readme {"position":"1450,75","size":"100,100"}
+You Start with 3 skills that are not helpful for a combat. Sell them to gain some gold to buy fighting competences. 
+
+
+The Game is not fully functionnal. The oart of the game that is not working is the "ATTACK' passage. The hero is not able to attck the hero, however, he can use the shielld to protect himself and rceive damage from the Phoenix. 
+
+
